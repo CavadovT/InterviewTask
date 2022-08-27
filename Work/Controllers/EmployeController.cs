@@ -135,8 +135,8 @@ namespace Work.Controllers
         /// <param name="surname"></param>
         /// <param name="depid"></param>
         /// <returns></returns>
-        [HttpGet("filter")]
-        public async Task<ActionResult<ICollection<Employee>>> GetFilteredEmployees([FromQuery] PageFilter pageFilter, [FromQuery]FilterEmployeeDto f)
+        [HttpGet]
+        public async Task<ActionResult<ICollection<Employee>>> GetFilteredEmployees([FromQuery] FilterEmployeeDto f)
         {
 
             var employees = _context.Employees.AsQueryable();
@@ -157,7 +157,7 @@ namespace Work.Controllers
                 employees = employees.Where(e => e.DepartmentId == f.DepartmentId);
             }
 
-            var pagedList = await PageList<Employee>.CreateAsync(employees, pageFilter.PageNumber, pageFilter.PageSize);
+            var pagedList = await PageList<Employee>.CreateAsync(employees, f.pageFilter.PageNumber, f.pageFilter.PageSize);
             Response.AddPaginationHeader(pagedList.CurrentPage, pagedList.PageSize, pagedList.TotalCount, pagedList.TotalPages);
 
             return pagedList.ToList();
